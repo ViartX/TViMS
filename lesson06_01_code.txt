@@ -1,0 +1,37 @@
+import numpy
+zp = [35, 45, 190, 200, 40, 70, 54, 150, 120, 110]
+ks = [401, 574, 874, 919, 459, 739, 653, 902, 746, 832]
+zpks = [14035, 25830, 166060, 183800, 18360, 51730, 35262, 135300, 89520, 91520]
+
+sum_zp = 0
+sum_ks = 0
+sum_zpks = 0
+for a in zp:
+  sum_zp += a
+print(f"сумма элементов выборки zp: {sum_zp}")
+
+for b in ks:
+  sum_ks += b
+print(f"сумма элементов выборки ks: {sum_ks}")
+
+for c in zpks:
+  sum_zpks += c
+print(f"сумма элементов выборки zpks: {sum_zpks}")
+
+n = len(zp)
+print(f"размер выборки: {n}")
+
+mzp = sum_zp/n
+print(f"математическое zp: {mzp}")
+
+mks = sum_ks/n
+print(f"математическое ks: {mks}")
+
+mzpks = sum_zpks/n
+print(f"математическое zpks: {mzpks}")
+
+Covariance = numpy.cov(zp, ks, bias=True)[0][1]
+print(Covariance)
+
+pirs = numpy.corrcoef(zp, ks)[0, 1]
+print(pirs)
