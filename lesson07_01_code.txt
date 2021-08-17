@@ -1,0 +1,74 @@
+import numpy as np
+
+# количество наблюдений
+n = 10
+
+zp = np.array([35, 45, 190, 200, 40, 70, 54, 150, 120, 110], dtype=np.float64)
+ks = np.array([401, 574, 874, 919, 459, 739, 653, 902, 746, 832], dtype=np.float64)
+
+#коэффициенты регрессии
+b = (np.mean(zp * ks) - np.mean(zp) * np.mean(ks)) / (np.mean(zp**2) - np.mean(zp) ** 2)
+print(f"коэффициент регрессии b: {b}")
+a = np.mean(ks) - b * np.mean(zp)
+print(f"коэффициент регрессии a: {a}")
+
+#коэффициент корелляции
+r = b * np.std(zp) / np.std(ks)
+print(f"коэффициент корелляции r: {r}")
+
+#коэффициент детерминации
+R2 = r**2
+print(f"коэффициент детерминации R2: {R2}")
+
+#предсказанный моделью ks
+ks_pred = a + b * zp
+print(f"предсказанный кредитный счет: {ks_pred}")
+
+#средняя ошибка аппроксимации
+A_mean = 100 * np.mean(np.abs((ks - ks_pred) / ks))
+print(f"средняя ошибка аппроксимации: {A_mean}")
+
+#критерий Фишера
+F_fact = (r**2 * (n - 2)) / (1 - r**2)
+print(f"критерий Фишера: {F_fact}")
+
+#стандартная ошибка, случайные ошибки
+s_residual = np.sqrt(np.sum((ks - ks_pred)**2) / (n - 2))
+m_a = s_residual * np.sqrt(np.sum(zp ** 2)) / (n * np.std(zp))
+m_b = s_residual / (np.std(zp) * np.sqrt(n))
+
+print('s_residual = {}\nm_a = {}\nm_b = {}'.format(s_residual, m_a, m_b))
+
+#наблюдаемые значения критерия
+t_a = a / m_a
+print(f"ta: {t_a}")
+t_b = b / m_b
+print(f"tb: {t_b}")
+
+#доверительные интералы
+t_cr = 2.228
+delta_a = t_cr * m_a
+print(f"delta_a: {delta_a}")
+delta_b = t_cr * m_b
+print(f"delta_b: {delta_b}")
+
+gamma_a_min = a - delta_a
+gamma_a_max= a + delta_a
+gamma_b_min = b - delta_b
+gamma_b_max= b + delta_b
+print(f"доверительный интервал по a (: {gamma_a_min};{gamma_a_max})")
+print(f"доверительный интервал по b (: {gamma_b_min};{gamma_b_max})")
+
+import pandas as pd
+df = pd.DataFrame({'zp': zp, 'ks': ks, 'ks_pred': ks_pred}, columns=['zp', 'ks', 'ks_pred'])
+df
+df = df.sort_values('zp')
+df
+
+import matplotlib.pyplot as plt
+
+plt.scatter(df['zp'], df['ks'])
+plt.plot(df['zp'], df['ks_pred'])
+plt.xlabel('Зарплата')
+plt.ylabel('Кредитный счет')
+plt.show()
